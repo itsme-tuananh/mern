@@ -1,0 +1,36 @@
+<p>To use the Google Maps JS&nbsp;SDK, you unfortunately <em>need a credit card</em> - event though you're most likely staying within the free tier Google offers.</p><p>There's no way around that and since we later in the course also use another Google API, there also is no great alternative service we could use instead.</p><p><strong>BUT:&nbsp;This of course is just a small detail in the course project </strong>- it does not affect what you learn about the MERN&nbsp;stack. It's just an example of what you could do in the frontend.</p><p>So as a workaround, you can simply render a modal with just the address and a placeholder instead of the map (e.g. simply a <code>&lt;div&gt;</code> which is styled to have a simple background color).</p><p><strong>If you absolutely want a map, you can also have a look at OpenLayers, which does NOT&nbsp;require a credit card:</strong>&nbsp;<a href="https://openlayers.org/en/latest/doc/quickstart.html" rel="noopener noreferrer" target="_blank">https://openlayers.org/en/latest/doc/quickstart.html</a></p><p><strong>You can render a map with OpenLayers like this:</strong></p><p>Make sure you got the following imports in your <code>&lt;head&gt;</code>&nbsp;section in the <code>public/index.html</code> file:</p><pre class="prettyprint linenums">&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/css/ol.css" type="text/css"&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/build/ol.js"&gt;&lt;/script&gt;</pre><p>In <code>Map.js</code>:</p><pre class="prettyprint linenums">import React, { useRef, useEffect } from 'react';
+
+import './Map.css';
+
+const Map = props =&gt; {
+  const mapRef = useRef();
+  
+  const { center, zoom } = props;
+
+  useEffect(() =&gt; {
+    new window.ol.Map({
+      target: mapRef.current.id,
+      layers: [
+        new window.ol.layer.Tile({
+          source: new window.ol.source.OSM()
+        })
+      ],
+      view: new window.ol.View({
+        center: window.ol.proj.fromLonLat([center.lng, center.lat]),
+        zoom: zoom
+      })
+    });
+  }, [center, zoom]);
+
+  return (
+    &lt;div
+      ref={mapRef}
+      className={`map ${props.className}`}
+      style={props.style}
+      id="map"
+    &gt;&lt;/div&gt;
+  );
+};
+
+export default Map;</pre><p>Don't overlook the part where I&nbsp;added the <code>id</code> prop to the <code>&lt;div&gt;</code>!</p>
